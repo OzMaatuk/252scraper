@@ -1,0 +1,12 @@
+# Constants for XPaths
+LOGIN_FORM_XPATH = "/html/body/div[1]/div/div/section/div/div/div/div/div/div[4]/div/form/div[1]/div/input"
+LOGIN_EMAIL_TEXTBOX = "/html/body/div[1]/div/div/section/div/div/div/div/div/div[4]/div/form/div[1]/div/input"
+LOGIN_PASSWORD_TEXTBOX = "/html/body/div[1]/div/div/section/div/div/div/div/div/div[4]/div/form/div[2]/div/input"
+LOGIN_SUBMIT_BUTTON = "/html/body/div[1]/div/div/section/div/div/div/div/div/div[4]/div/form/div[4]/div/div/button"
+CARDS_CONTAINER_XPATH = "/html/body/div[2]/div/section[2]/div/div/div/div/div/div/div/div/div"
+POPUP_BUTTON = "/html/body/div[5]/div/div[4]/i"
+GENDER_CHECKBOX_XPATH = "//input[@type='checkbox' and @value='female']"
+AGE_SLIDER_XPATH = "//div[@class='jet-range__slider']"
+CARDS_XPATH = "/html/body/div[2]/div/section[2]/div/div/div/div/div/div/div/div/div/div"
+CARD_NAME = ".//h2[contains(@class, 'elementor-heading-title')]/a"
+CARD_BUTTON = ".//div[contains(@class, 'elementor-button-wrapper')]//a[contains(text(), 'צפייה בכרטיס')]"
