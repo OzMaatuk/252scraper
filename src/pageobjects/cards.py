@@ -1,19 +1,26 @@
+from base import BasePage
+import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 from src.pageobjects.xpaths import *
 
-class CardsPage:
+
+class CardsPage(BasePage):
     def __init__(self, driver, logger):
-        self.driver = driver
-        self.logger = logger
+        super().__init__(driver, logger)
 
     def load_cards(self, url):
+        """Loads the cards page and handles the initial popup."""
+        
         # Navigate to the cards
-        self.logger.info(f"Navigating to: {url}")
-        self.driver.get(url)
+        self.load(url)  # Use the load method from BasePage
+        
+        # Click the clock popup button
+        self.click_element(POPUP_BUTTON)
+        self.logger.info("Close popup.")
 
+    def wait_for_page_load(self, url=""):
         # Wait for login to complete and redirect to happen
         WebDriverWait(self.driver, 10).until(
             EC.url_contains(url)  # Wait for URL to contain cards page path
@@ -26,12 +33,6 @@ class CardsPage:
         )
         self.logger.info("Cards container loaded.")
 
-        # Click the clock popup button
-        filter_icon = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, POPUP_BUTTON))
-        )
-        filter_icon.click()
-        self.logger.info("Close popup.")
 
     def apply_filters(self):
         # --- Filters Section ---
@@ -46,9 +47,7 @@ class CardsPage:
             self.logger.info("Clicked gender checkbox using JavaScript and triggered change event.")
 
             # 3. Get the slider element
-            slider_element = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, AGE_SLIDER_XPATH))
-            )
+            slider_element = self.find_element(AGE_SLIDER_XPATH)
 
             # 4. Get the min and max input elements within the slider
             min_input = slider_element.find_element(By.CSS_SELECTOR, "input.jet-range__slider__input--min")
@@ -78,15 +77,11 @@ class CardsPage:
             time.sleep(10)  # Wait for cards to load
 
             # Try to find more cards
-            new_cards = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_all_elements_located((By.XPATH, CARDS_XPATH))
-            )
+            new_cards = self.find_elements(CARDS_XPATH) 
 
             # Wait for a specific element that indicates the cards are loaded
             self.logger.info("Waiting for cards container to load...")
-            WebDriverWait(self.driver, 20).until(
-                EC.presence_of_element_located((By.XPATH, CARDS_CONTAINER_XPATH))
-            )
+            self.find_element(CARDS_CONTAINER_XPATH)
             self.logger.info("Cards container loaded.")
 
             # If no new cards are found, break the loop
@@ -99,33 +94,23 @@ class CardsPage:
         self.logger.info("All cards loaded.")
 
         # Find all cards using a more reliable XPath
-        cards = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_all_elements_located((By.XPATH, CARDS_XPATH))
-        )
+        cards = self.find_elements(CARDS_XPATH)
         self.logger.info(f"Found {len(cards)} cards.")
-
-
         time.sleep(30)
 
-
         # --- Process Cards ---
-
         # Iterate through cards
         for index, card in enumerate(cards):
             card_name = ""
             try:
                 # Locate the card name element 
-                card_name_element = WebDriverWait(card, 10).until(
-                    EC.presence_of_element_located((By.XPATH, CARD_NAME))
-                )
+                card_name_element = self.find_element(CARD_NAME, timeout=20)
                 card_name = card_name_element.text
                 self.logger.info(f"Processing card {index+1}: {card_name}")
 
                 # --- Click on the "View" Button ---
-                view_button = WebDriverWait(card, 10).until(
-                    EC.element_to_be_clickable((By.XPATH, CARD_BUTTON))
-                )
-                view_button.click()
+                view_button = self.find_element(CARD_BUTTON, timeout=20)
+                self.click_element(CARD_BUTTON)
                 self.logger.info(f"Clicked 'View' button on card: {card_name}")
 
                 # --- Switch to New Tab, Perform Actions, and Close ---
