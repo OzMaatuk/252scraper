@@ -1,12 +1,11 @@
-from base import BasePage
+from .base import BasePage
 from .xpaths import *
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
 class LoginPage(BasePage):
-    def __init__(self, driver, logger):
-        super().__init__(driver, logger)
+    def __init__(self, driver, logger, selenium_facade):
+        super().__init__(driver, logger, selenium_facade) 
 
     def login(self, redirect_url, email, password):
         """

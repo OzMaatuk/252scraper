@@ -4,7 +4,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import os
 from dotenv import load_dotenv
-from src.automation import Automation 
+from src.automation import Automation
+from src.pageobjects.facade import SeleniumFacade 
 
 # Load environment variables from .env
 load_dotenv()
@@ -42,8 +43,11 @@ if __name__ == "__main__":
     driver = setup_webdriver(chromedriver_path)
     logger.info("WebDriver initialized.")
 
+    # Create the SeleniumFacade
+    selenium_facade = SeleniumFacade(driver)
+
     # Start automation
-    automation = Automation(driver, logger, members_url, login_url, cards_url, username, password)
+    automation = Automation(driver, logger, selenium_facade, login_url, cards_url, username, password)
     automation.run()
 
     # Clean up

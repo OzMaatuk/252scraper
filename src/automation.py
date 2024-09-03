@@ -16,7 +16,7 @@ class Automation:
     """
     Using State-Machine pattern to manage the state and flow of the automation.
     """
-    def __init__(self, driver, logger, members_url, login_url, cards_url, username, password):
+    def __init__(self, driver, logger, members_url, facade, login_url, cards_url, username, password):
         """
         Initializes the state machine.
 
@@ -40,6 +40,7 @@ class Automation:
         self.login_url = login_url
         self.cards_url = cards_url
         self.members_url = members_url
+        self.facade = facade
         self.username = username
         self.password = password
 
