@@ -4,8 +4,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import os
 from dotenv import load_dotenv
-from src.automation import Automation
-from src.pageobjects.facade import SeleniumFacade 
+from src.patterns.automation import Automation
+from src.patterns.facade import SeleniumFacade 
 
 # Load environment variables from .env
 load_dotenv()

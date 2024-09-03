@@ -1,5 +1,5 @@
-from src.pageobjects.login import LoginPage
-from src.pageobjects.cards import CardsPage
+from src.pages.login import LoginPage
+from src.pages.cards import CardsPage
 
 class State:
     """
