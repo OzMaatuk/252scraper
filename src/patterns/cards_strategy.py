@@ -23,11 +23,26 @@ class CardCollectionStrategy(ABC):
 from src.pages.xpaths import *
 from src.pages.pageobjects.card import Card
 import time
+from selenium.webdriver.remote.webdriver import WebDriver
+from src.patterns.facade import SeleniumFacade
+from src.patterns.cards_strategy import CardCollectionStrategy
+import logging
 
 class StandardCardCollection(CardCollectionStrategy):
     """Collects cards by scrolling and finding them using a specific XPath."""
 
-    def collect_cards(self, driver):
+    def __init__(self, selenium_facade: SeleniumFacade, logger: logging.Logger):
+        """
+        Initializes the StandardCardCollection strategy.
+
+        Args:
+            selenium_facade (SeleniumFacade): The SeleniumFacade instance for interacting with the browser.
+            logger (logging.Logger): The logger for output messages.
+        """
+        self.selenium_facade = selenium_facade
+        self.logger = logger
+
+    def collect_cards(self, driver: WebDriver):
         """Collects all visible cards on the page after scrolling."""
         try:
             self.scroll_to_load_all_cards(driver)
@@ -39,7 +54,7 @@ class StandardCardCollection(CardCollectionStrategy):
         except Exception as e:
             raise Exception(f"Error collecting cards: {e}")
 
-    def scroll_to_load_all_cards(self, driver):
+    def scroll_to_load_all_cards(self, driver: WebDriver):
         """Scrolls down the page until all cards are loaded."""
         self.logger.info("Scrolling to load all cards...")
         cards = []
@@ -52,7 +67,7 @@ class StandardCardCollection(CardCollectionStrategy):
             cards = new_cards
         self.logger.info("All cards loaded.")
 
-    def iterate_through_cards(self, driver, cards):
+    def iterate_through_cards(self, driver: WebDriver, cards: list):
         """Iterates through the collected cards and applies the process_card method."""
         for index, card_element in enumerate(cards):
             card = Card(self.selenium_facade, card_element)
@@ -66,7 +81,7 @@ class StandardCardCollection(CardCollectionStrategy):
             except Exception as e:
                 self.logger.error(f"Error processing card: {e}") 
 
-    def process_card(self, driver, card):
+    def process_card(self, driver: WebDriver, card: Card):
         """Clicks the "View" button and performs actions in the new tab."""
         card.click_view_button()
         self.logger.info(f"Clicked 'View' button on card: {card.get_name()}")

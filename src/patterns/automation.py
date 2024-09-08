@@ -1,7 +1,10 @@
+from patterns.facade import SeleniumFacade
 from src.pages.login import LoginPage
 from src.pages.cards import CardsPage
 from src.patterns.login_strategy import LoginStrategy
 from src.patterns.cards_strategy import CardCollectionStrategy
+from selenium.webdriver.remote.webdriver import WebDriver
+import logging
 
 class State:
     """
@@ -18,19 +21,19 @@ class Automation:
     """
     Using State-Machine pattern to manage the state and flow of the automation.
     """
-    def __init__(self, driver, logger, members_url, facade, login_url, cards_url, username, password, login_strategy: LoginStrategy, card_collection_strategy: CardCollectionStrategy):
+    def __init__(self, driver: WebDriver, logger: logging.Logger, members_url: str, facade: SeleniumFacade, login_url: str, cards_url: str, username: str, password: str, login_strategy: LoginStrategy, card_collection_strategy: CardCollectionStrategy):
         """
         Initializes the state machine.
 
         Args:
-            driver (webdriver): The Selenium WebDriver instance.
+            driver (WebDriver): The Selenium WebDriver instance.
             logger (logging.Logger): The logger for output messages.
             login_url (str): The URL of the login page.
             cards_url (str): The URL of the cards page.
             username (str): The username for login.
             password (str): The password for login.
             login_strategy (LoginStrategy): The strategy for logging into the website.
-            card_collection_strategy (CardCollectionStrateg): The strategy for handling card collections.
+            card_collection_strategy (CardCollectionStrategy): The strategy for handling card collections.
         """
         self.driver = driver
         self.logger = logger
@@ -58,41 +61,61 @@ class Automation:
         Continues to execute actions based on the current state.
         """
         while True: # The loop can be controlled by a condition for ending the automation
-            if self.current_state == State.LOGIN:
-                self.handle_login_state()
-            elif self.current_state == State.LOAD_CARDS:
-                self.handle_load_cards_state()
-            elif self.current_state == State.APPLY_FILTERS:
-                self.handle_apply_filters_state()
-            elif self.current_state == State.PROCESS_CARDS:
-                self.handle_process_cards_state()
-            # ... handle more states
-            else:
-                self.logger.error(f"Invalid state: {self.current_state}")
-                break # Exit the loop if in invalid state 
+            try:
+                if self.current_state == State.LOGIN:
+                    self.handle_login_state()
+                elif self.current_state == State.LOAD_CARDS:
+                    self.handle_load_cards_state()
+                elif self.current_state == State.APPLY_FILTERS:
+                    self.handle_apply_filters_state()
+                elif self.current_state == State.PROCESS_CARDS:
+                    self.handle_process_cards_state()
+                # ... handle more states
+                else:
+                    self.logger.error(f"Invalid state: {self.current_state}")
+                    break # Exit the loop if in invalid state 
+            except Exception as e:
+                self.logger.error(f"Error in state '{self.current_state}': {e}")
+                break
 
     def handle_login_state(self):
         """Handles the logic for the LOGIN state."""
-        self.login_page.load(self.login_url)
-        self.login_page.login(self.members_url, self.username, self.password)
-        self.transition_to(State.LOAD_CARDS)  # Transition to the next state after login
+        try:
+            self.login_page.load(self.login_url)
+            self.login_page.login(self.members_url, self.username, self.password)
+            self.transition_to(State.LOAD_CARDS)  # Transition to the next state after login
+        except Exception as e:
+            self.logger.error(f"Failed to handle login state: {e}")
+            raise
 
     def handle_load_cards_state(self):
         """Handles the logic for the LOAD_CARDS state."""
-        self.cards_page.load_cards(self.cards_url)
-        self.transition_to(State.APPLY_FILTERS)  # Transition to the next state
+        try:
+            self.cards_page.load_cards(self.cards_url)
+            self.transition_to(State.APPLY_FILTERS)  # Transition to the next state
+        except Exception as e:
+            self.logger.error(f"Failed to handle load cards state: {e}")
+            raise
 
     def handle_apply_filters_state(self):
         """Handles the logic for the APPLY_FILTERS state."""
-        self.cards_page.apply_filters()
-        self.transition_to(State.PROCESS_CARDS) # Transition to the next state
+        try:
+            self.cards_page.apply_filters()
+            self.transition_to(State.PROCESS_CARDS) # Transition to the next state
+        except Exception as e:
+            self.logger.error(f"Failed to handle apply filters state: {e}")
+            raise
 
     def handle_process_cards_state(self):
         """Handles the logic for the PROCESS_CARDS state."""
-        self.cards_page.process_cards()
-        # ... (add logic for transitioning to other states or ending automation if needed)
+        try:
+            self.cards_page.process_cards()
+            # ... (add logic for transitioning to other states or ending automation if needed)
+        except Exception as e:
+            self.logger.error(f"Failed to handle process cards state: {e}")
+            raise
 
-    def transition_to(self, new_state):
+    def transition_to(self, new_state: str):
         """
         Transitions the state machine to a new state.
 
