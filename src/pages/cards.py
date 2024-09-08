@@ -1,14 +1,16 @@
-from pages.pageobjects.age_filter import AgeFilter
-from pages.pageobjects.gender_filter import GenderFilter
-from .base import BasePage
-from .xpaths import *
+import logging
+import time
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from src.patterns.cards_strategy import CardCollectionStrategy
 from selenium.webdriver.remote.webdriver import WebDriver
+
+from src.pages.xpaths import *
+from src.pages.base import BasePage
 from src.patterns.facade import SeleniumFacade
-import logging
-import time
+from src.pages.pageobjects.age_filter import AgeFilter
+from src.pages.pageobjects.gender_filter import GenderFilter
 
 class CardsPage(BasePage):
     def __init__(self, driver: WebDriver, logger: logging.Logger, selenium_facade: SeleniumFacade, card_collection_strategy: CardCollectionStrategy):

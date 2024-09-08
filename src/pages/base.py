@@ -1,6 +1,7 @@
+import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
-import logging
+from src.patterns.facade import SeleniumFacade
 
 class BasePage:
     """

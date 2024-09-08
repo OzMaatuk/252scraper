@@ -1,8 +1,5 @@
 from abc import ABC, abstractmethod
 from selenium.webdriver.remote.webdriver import WebDriver
-from src.pages.xpaths import *
-from src.patterns.facade import SeleniumFacade
-import logging
 
 class LoginStrategy(ABC):
     """Base class for login strategies."""
@@ -18,6 +15,10 @@ class LoginStrategy(ABC):
             password (str): The password.
         """
         pass
+
+
+from src.pages.xpaths import *
+from src.patterns.facade import SeleniumFacade
 
 class StandardLogin(LoginStrategy):
     """Logs in using the standard username/password form."""

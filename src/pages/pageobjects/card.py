@@ -1,7 +1,7 @@
+import logging
+from selenium.webdriver.remote.webelement import WebElement
 from src.pages.xpaths import *
 from src.patterns.facade import SeleniumFacade
-from selenium.webdriver.remote.webelement import WebElement
-import logging
 
 class Card:
     """Represents an individual card on the page."""

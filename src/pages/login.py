@@ -1,11 +1,13 @@
-from .base import BasePage
-from .xpaths import *
+import logging
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from src.patterns.login_strategy import LoginStrategy
 from selenium.webdriver.remote.webdriver import WebDriver
+
+from src.pages.base import BasePage
+from src.pages.xpaths import *
+from src.patterns.login_strategy import LoginStrategy
 from src.patterns.facade import SeleniumFacade
-import logging
 
 class LoginPage(BasePage):
     def __init__(self, driver: WebDriver, logger: logging.Logger, selenium_facade: SeleniumFacade, login_strategy: LoginStrategy):

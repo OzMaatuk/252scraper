@@ -1,7 +1,7 @@
+import logging
 from selenium.webdriver.common.keys import Keys
 from src.pages.xpaths import *
 from src.patterns.facade import SeleniumFacade
-import logging
 
 class AgeFilter:
     """Represents the age range slider element."""

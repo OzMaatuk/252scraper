@@ -20,13 +20,14 @@ class CardCollectionStrategy(ABC):
         pass 
 
 # from .card_collection_strategy import CardCollectionStrategy
+import time
+import logging
+from selenium.webdriver.remote.webdriver import WebDriver
+
 from src.pages.xpaths import *
 from src.pages.pageobjects.card import Card
-import time
-from selenium.webdriver.remote.webdriver import WebDriver
 from src.patterns.facade import SeleniumFacade
 from src.patterns.cards_strategy import CardCollectionStrategy
-import logging
 
 class StandardCardCollection(CardCollectionStrategy):
     """Collects cards by scrolling and finding them using a specific XPath."""

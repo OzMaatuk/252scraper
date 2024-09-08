@@ -1,14 +1,16 @@
 import logging
+import os
+from dotenv import load_dotenv
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-import os
-from dotenv import load_dotenv
+from selenium.common.exceptions import WebDriverException
+
 from src.patterns.automation import Automation
 from src.patterns.facade import SeleniumFacade
 from src.patterns.login_strategy import StandardLogin 
 from src.patterns.cards_strategy import StandardCardCollection
-from selenium.common.exceptions import WebDriverException
 
 # Load environment variables from .env
 load_dotenv()

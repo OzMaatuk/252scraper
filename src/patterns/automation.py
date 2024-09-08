@@ -1,4 +1,4 @@
-from patterns.facade import SeleniumFacade
+from src.patterns.facade import SeleniumFacade
 from src.pages.login import LoginPage
 from src.pages.cards import CardsPage
 from src.patterns.login_strategy import LoginStrategy
