@@ -78,7 +78,16 @@ if __name__ == "__main__":
     card_collection_strategy = StandardCardCollection(selenium_facade, logger)
 
     # Start automation
-    automation = Automation(driver, logger, members_url, selenium_facade, login_url, cards_url, username, password, login_strategy, card_collection_strategy)
+    automation = Automation(driver, 
+                            logger, 
+                            members_url, 
+                            selenium_facade, 
+                            login_url, 
+                            cards_url, 
+                            username, 
+                            password, 
+                            login_strategy, 
+                            card_collection_strategy)
     try:
         automation.run()
     except Exception as e:

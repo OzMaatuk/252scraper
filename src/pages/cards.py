@@ -13,7 +13,10 @@ from src.pages.pageobjects.age_filter import AgeFilter
 from src.pages.pageobjects.gender_filter import GenderFilter
 
 class CardsPage(BasePage):
-    def __init__(self, driver: WebDriver, logger: logging.Logger, selenium_facade: SeleniumFacade, card_collection_strategy: CardCollectionStrategy):
+    def __init__(self, driver: WebDriver, 
+                 logger: logging.Logger, 
+                 selenium_facade: SeleniumFacade, 
+                 card_collection_strategy: CardCollectionStrategy):
         """
         Initializes the CardsPage.
 

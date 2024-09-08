@@ -49,7 +49,6 @@ class StandardCardCollection(CardCollectionStrategy):
             self.scroll_to_load_all_cards(driver)
             cards = self.selenium_facade.find_elements(CARDS_XPATH)
             self.logger.info(f"Found {len(cards)} cards.")
-            time.sleep(30)
             return cards
 
         except Exception as e:
@@ -61,7 +60,7 @@ class StandardCardCollection(CardCollectionStrategy):
         cards = []
         while True:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(10)  # Adjust wait time if needed
+            time.sleep(10)
             new_cards = self.selenium_facade.find_elements(CARDS_XPATH)
             if len(new_cards) == len(cards):
                 break
@@ -75,8 +74,6 @@ class StandardCardCollection(CardCollectionStrategy):
             try:
                 card_name = card.get_name()
                 self.logger.info(f"Processing card {index + 1}: {card_name}")
-
-                # Apply the process_card method 
                 self.process_card(driver, card) 
 
             except Exception as e:

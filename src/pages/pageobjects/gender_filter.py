@@ -2,6 +2,7 @@ import logging
 from src.pages.xpaths import *
 from src.patterns.facade import SeleniumFacade
 
+
 class GenderFilter:
     """Represents the gender filter element."""
 
@@ -24,26 +25,10 @@ class GenderFilter:
             gender (str): The gender to select (e.g., 'female', 'male').
         """
         try:
-            gender_checkbox_xpath = f"{self.container_locator}//input[@type='checkbox' and @value='{gender}']"
-
-            # Use JavaScript to click the checkbox and trigger the change event
-            self.selenium_facade.execute_script(
-                f"""
-                const checkbox = document.evaluate('{gender_checkbox_xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-                checkbox.checked = true;
-                checkbox.dispatchEvent(new Event('change')); 
-                """ 
-            )
-
+            gender_checkbox = self.selenium_facade.find_element(self.container_locator.replace("{gender}", gender))
+            # Click the Gender checkbox using JavaScript
+            self.selenium_facade.execute_script("arguments[0].click(); arguments[0].dispatchEvent(new Event('change'));", gender_checkbox)
             logging.info(f"Selected gender: {gender}")
         except Exception as e:
             logging.error(f"Error selecting gender '{gender}': {e}")
             raise
-
-
-            # # 2. Click the Gender checkbox using JavaScript
-            # gender_checkbox = WebDriverWait(self.driver, 10).until(
-            #     EC.presence_of_element_located((By.XPATH, GENDER_CHECKBOX_XPATH))
-            # )
-            # self.driver.execute_script("arguments[0].click(); arguments[0].dispatchEvent(new Event('change'));", gender_checkbox)
-            # self.logger.info("Clicked gender checkbox using JavaScript and triggered change event.")

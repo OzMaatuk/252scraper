@@ -21,7 +21,16 @@ class Automation:
     """
     Using State-Machine pattern to manage the state and flow of the automation.
     """
-    def __init__(self, driver: WebDriver, logger: logging.Logger, members_url: str, facade: SeleniumFacade, login_url: str, cards_url: str, username: str, password: str, login_strategy: LoginStrategy, card_collection_strategy: CardCollectionStrategy):
+    def __init__(self, driver: WebDriver, 
+                 logger: logging.Logger, 
+                 members_url: str, 
+                 facade: SeleniumFacade, 
+                 login_url: str, 
+                 cards_url: str, 
+                 username: str, 
+                 password: str, 
+                 login_strategy: LoginStrategy, 
+                 card_collection_strategy: CardCollectionStrategy):
         """
         Initializes the state machine.
 
