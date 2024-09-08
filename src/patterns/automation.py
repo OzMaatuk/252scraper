@@ -1,5 +1,7 @@
 from src.pages.login import LoginPage
 from src.pages.cards import CardsPage
+from src.patterns.login_strategy import LoginStrategy
+from src.patterns.cards_strategy import CardCollectionStrategy
 
 class State:
     """
@@ -16,7 +18,7 @@ class Automation:
     """
     Using State-Machine pattern to manage the state and flow of the automation.
     """
-    def __init__(self, driver, logger, members_url, facade, login_url, cards_url, username, password):
+    def __init__(self, driver, logger, members_url, facade, login_url, cards_url, username, password, login_strategy: LoginStrategy, card_collection_strategy: CardCollectionStrategy):
         """
         Initializes the state machine.
 
@@ -27,14 +29,12 @@ class Automation:
             cards_url (str): The URL of the cards page.
             username (str): The username for login.
             password (str): The password for login.
+            login_strategy (LoginStrategy): The strategy for logging into the website.
+            card_collection_strategy (CardCollectionStrateg): The strategy for handling card collections.
         """
         self.driver = driver
         self.logger = logger
         self.current_state = State.LOGIN  # Start in the login state
-
-        # Page Objects 
-        self.login_page = LoginPage(self.driver, self.logger)
-        self.cards_page = CardsPage(self.driver, self.logger)
 
         # Credentials & URLs
         self.login_url = login_url
@@ -43,6 +43,14 @@ class Automation:
         self.facade = facade
         self.username = username
         self.password = password
+
+        # Strategies
+        self.login_strategy = login_strategy
+        self.card_collection_strategy = card_collection_strategy
+        
+        # Page Objects
+        self.login_page = LoginPage(self.driver, self.logger, self.facade, self.login_strategy)
+        self.cards_page = CardsPage(self.driver, self.logger, self.facade, self.card_collection_strategy)
 
     def run(self):
         """

@@ -5,7 +5,10 @@ from selenium.webdriver.chrome.options import Options
 import os
 from dotenv import load_dotenv
 from src.patterns.automation import Automation
-from src.patterns.facade import SeleniumFacade 
+from src.patterns.facade import SeleniumFacade
+from src.patterns.login_strategy import StandardLogin 
+from src.patterns.cards_strategy import StandardCardCollection
+
 
 # Load environment variables from .env
 load_dotenv()
@@ -46,8 +49,12 @@ if __name__ == "__main__":
     # Create the SeleniumFacade
     selenium_facade = SeleniumFacade(driver)
 
+    # Create Strategy objects
+    login_strategy = StandardLogin(selenium_facade)
+    card_collection_strategy = StandardCardCollection(selenium_facade, logger)
+
     # Start automation
-    automation = Automation(driver, logger, selenium_facade, login_url, cards_url, username, password)
+    automation = Automation(driver, logger, members_url, selenium_facade, login_url, cards_url, username, password, login_strategy, card_collection_strategy)
     automation.run()
 
     # Clean up
