@@ -30,7 +30,8 @@ class Automation:
                  username: str, 
                  password: str, 
                  login_strategy: LoginStrategy, 
-                 card_collection_strategy: CardCollectionStrategy):
+                 card_collection_strategy: CardCollectionStrategy,
+                 message: str):
         """
         Initializes the state machine.
 
@@ -55,6 +56,7 @@ class Automation:
         self.facade = facade
         self.username = username
         self.password = password
+        self.message = message
 
         # Strategies
         self.login_strategy = login_strategy
@@ -118,7 +120,7 @@ class Automation:
     def handle_process_cards_state(self):
         """Handles the logic for the PROCESS_CARDS state."""
         try:
-            self.cards_page.process_cards()
+            self.cards_page.process_cards(self.message)
             # ... (add logic for transitioning to other states or ending automation if needed)
         except Exception as e:
             self.logger.error(f"Failed to handle process cards state: {e}")

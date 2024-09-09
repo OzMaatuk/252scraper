@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from typing import Callable
+from selenium.webdriver.remote.webelement import WebElement
 
 class CardCollectionStrategy(ABC):
     """Base class for card collection strategies."""
@@ -17,7 +19,17 @@ class CardCollectionStrategy(ABC):
         Returns:
             list: A list of card WebElements.
         """
-        pass 
+        pass
+
+    @abstractmethod
+    def iterate_through_cards(self, driver: WebDriver, cards: list[WebElement], card_processing_function: Callable[[WebDriver, Card, str], None], message: str):
+        """Iterates through the collected cards and applies the provided processing function."""
+        pass
+
+    @abstractmethod
+    def process_card(self, driver: WebDriver, card: Card, *args):
+        """Defines how to process each individual card."""
+        pass
 
 # from .card_collection_strategy import CardCollectionStrategy
 import time
@@ -60,31 +72,63 @@ class StandardCardCollection(CardCollectionStrategy):
         cards = []
         while True:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(10)
+            time.sleep(3)
             new_cards = self.selenium_facade.find_elements(CARDS_XPATH)
             if len(new_cards) == len(cards):
                 break
             cards = new_cards
         self.logger.info("All cards loaded.")
 
-    def iterate_through_cards(self, driver: WebDriver, cards: list):
-        """Iterates through the collected cards and applies the process_card method."""
+    def iterate_through_cards(self, driver: WebDriver, cards: list[WebElement], card_processing_function: Callable[[WebDriver, Card, str], None], *args):
+        """Iterates through the collected cards and applies the provided processing function."""
         for index, card_element in enumerate(cards):
             card = Card(self.selenium_facade, card_element)
             try:
                 card_name = card.get_name()
                 self.logger.info(f"Processing card {index + 1}: {card_name}")
-                self.process_card(driver, card) 
+
+                # Apply the provided card processing function with any additional arguments 
+                card_processing_function(driver, card, *args) 
 
             except Exception as e:
-                self.logger.error(f"Error processing card: {e}") 
+                self.logger.error(f"Error processing card: {e}")
 
-    def process_card(self, driver: WebDriver, card: Card):
-        """Clicks the "View" button and performs actions in the new tab."""
+
+    def process_card(self, driver: WebDriver, card: Card, message: str):
+        """Clicks the "View" button, enters the message, and submits the form."""
         card.click_view_button()
         self.logger.info(f"Clicked 'View' button on card: {card.get_name()}")
 
         driver.switch_to.window(driver.window_handles[-1])
+
+        # --- Click "Send" button in the new tab ---
+        try:
+            self.selenium_facade.click_element(SEND_BUTTON_XPATH)
+            self.logger.info("Clicked 'Send' button")
+        except Exception as e:
+            self.logger.error(f"Error clicking the send button: {e}")
+
+                # --- Interact with the popup ---
+        try:
+            # Wait for popup to be visible
+            popup_locator = "//div[@role='dialog' and contains(@class, 'elementor-popup-modal')]"
+            self.selenium_facade.find_element(popup_locator)
+
+            # Enter text in the textarea 
+            text = f"היי {card.get_name()} {message}"
+            self.selenium_facade.enter_text(POPUP_TEXTAREA_XPATH, text)
+            self.logger.info(f"Entered text in textarea: {text}")
+
+
+            time.sleep(30)
+            exit()
+
+            # Click the submit button
+            self.selenium_facade.click_element(POPUP_SUBMIT_BUTTON_XPATH)
+            self.logger.info("Clicked 'Submit' button")
+
+        except Exception as e:
+            self.logger.error(f"Error interacting with popup: {e}")
 
         # --- Your actions in the new tab ---
         # ... (your code to extract data or interact with elements on the new page) ...

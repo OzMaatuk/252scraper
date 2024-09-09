@@ -21,6 +21,7 @@ cards_url = os.getenv('CARDS_URL')
 members_url = os.getenv('MEMBERS_URL')
 username = os.getenv('USERNAME')
 password = os.getenv('PASSWORD')
+message = os.getenv('MESSAGE')
 
 # Set up logging
 def setup_logging() -> logging.Logger:
@@ -87,7 +88,8 @@ if __name__ == "__main__":
                             username, 
                             password, 
                             login_strategy, 
-                            card_collection_strategy)
+                            card_collection_strategy,
+                            message)
     try:
         automation.run()
     except Exception as e:

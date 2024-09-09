@@ -69,20 +69,20 @@ class CardsPage(BasePage):
         try:
             self.logger.info("Setting filters...")
             self.gender_filter.select_gender("female")
-            self.age_range_slider.set_age_range(25, 33)
+            self.age_range_slider.set_age_range(23, 24) #TODO: make configurable
             self.logger.info("Filters applied.")
         except Exception as e:
             self.logger.error(f"Error setting filters: {e}")
             raise
-        time.sleep(10) 
+        time.sleep(10)
 
-    def process_cards(self):
+    def process_cards(self, message: str):
         """
         Processes visible cards on the page using the selected strategy.
         """
         try:
             cards = self.card_collection_strategy.collect_cards(self.driver)
-            self.card_collection_strategy.iterate_through_cards(self.driver, cards)  # Use the strategy to iterate
+            self.card_collection_strategy.iterate_through_cards(self.driver, cards, self.card_collection_strategy.process_card, message)
         except Exception as e:
             self.logger.error(f"Error processing cards: {e}")
             raise
