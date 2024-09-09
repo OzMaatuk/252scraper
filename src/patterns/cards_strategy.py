@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Callable
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.remote.webdriver import WebDriver
+from src.pages.pageobjects.card import Card
+
 
 class CardCollectionStrategy(ABC):
     """Base class for card collection strategies."""
@@ -34,10 +37,8 @@ class CardCollectionStrategy(ABC):
 # from .card_collection_strategy import CardCollectionStrategy
 import time
 import logging
-from selenium.webdriver.remote.webdriver import WebDriver
 
 from src.pages.xpaths import *
-from src.pages.pageobjects.card import Card
 from src.patterns.facade import SeleniumFacade
 from src.patterns.cards_strategy import CardCollectionStrategy
 
@@ -84,11 +85,10 @@ class StandardCardCollection(CardCollectionStrategy):
         for index, card_element in enumerate(cards):
             card = Card(self.selenium_facade, card_element)
             try:
-                card_name = card.get_name()
-                self.logger.info(f"Processing card {index + 1}: {card_name}")
+                self.logger.info(f"Processing card {index + 1}: {card.name}")
 
                 # Apply the provided card processing function with any additional arguments 
-                card_processing_function(driver, card, *args) 
+                card_processing_function(driver, card, *args)
 
             except Exception as e:
                 self.logger.error(f"Error processing card: {e}")
@@ -97,7 +97,7 @@ class StandardCardCollection(CardCollectionStrategy):
     def process_card(self, driver: WebDriver, card: Card, message: str):
         """Clicks the "View" button, enters the message, and submits the form."""
         card.click_view_button()
-        self.logger.info(f"Clicked 'View' button on card: {card.get_name()}")
+        self.logger.info(f"Clicked 'View' button on card: {card.name}")
 
         driver.switch_to.window(driver.window_handles[-1])
 
@@ -108,24 +108,21 @@ class StandardCardCollection(CardCollectionStrategy):
         except Exception as e:
             self.logger.error(f"Error clicking the send button: {e}")
 
-                # --- Interact with the popup ---
+        # --- Interact with the popup ---
         try:
             # Wait for popup to be visible
-            popup_locator = "//div[@role='dialog' and contains(@class, 'elementor-popup-modal')]"
-            self.selenium_facade.find_element(popup_locator)
+            self.selenium_facade.find_element(SEND_POPUP_XPATH)
 
             # Enter text in the textarea 
-            text = f"היי {card.get_name()} {message}"
-            self.selenium_facade.enter_text(POPUP_TEXTAREA_XPATH, text)
+            text = f"היי {card.name} {message}"
+            self.selenium_facade.enter_text(SEND_POPUP_TEXTAREA_XPATH, text)
             self.logger.info(f"Entered text in textarea: {text}")
 
-
-            time.sleep(30)
-            exit()
-
             # Click the submit button
-            self.selenium_facade.click_element(POPUP_SUBMIT_BUTTON_XPATH)
+            self.selenium_facade.click_element(SEND_POPUP_SUBMIT_BUTTON_XPATH)
             self.logger.info("Clicked 'Submit' button")
+
+            time.sleep(3) # wait for manually verification of the message and the submition.
 
         except Exception as e:
             self.logger.error(f"Error interacting with popup: {e}")
