@@ -62,14 +62,14 @@ class CardsPage(BasePage):
             self.logger.error(f"Error waiting for page load: {e}")
             raise
 
-    def apply_filters(self):
+    def apply_filters(self, min_age, max_age):
         """
         Applies the gender and age range filters.
         """
         try:
             self.logger.info("Setting filters...")
             self.gender_filter.select_gender("female")
-            self.age_range_slider.set_age_range(23, 24) #TODO: make configurable
+            self.age_range_slider.set_age_range(min_age, max_age)
             self.logger.info("Filters applied.")
         except Exception as e:
             self.logger.error(f"Error setting filters: {e}")

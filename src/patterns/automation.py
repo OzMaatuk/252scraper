@@ -31,7 +31,9 @@ class Automation:
                  password: str, 
                  login_strategy: LoginStrategy, 
                  card_collection_strategy: CardCollectionStrategy,
-                 message: str):
+                 message: str, 
+                 min_age: int, 
+                 max_age: int):
         """
         Initializes the state machine.
 
@@ -57,6 +59,8 @@ class Automation:
         self.username = username
         self.password = password
         self.message = message
+        self.min_age = min_age
+        self.max_age = max_age
 
         # Strategies
         self.login_strategy = login_strategy
@@ -111,7 +115,7 @@ class Automation:
     def handle_apply_filters_state(self):
         """Handles the logic for the APPLY_FILTERS state."""
         try:
-            self.cards_page.apply_filters()
+            self.cards_page.apply_filters(self.min_age, self.max_age)
             self.transition_to(State.PROCESS_CARDS) # Transition to the next state
         except Exception as e:
             self.logger.error(f"Failed to handle apply filters state: {e}")
