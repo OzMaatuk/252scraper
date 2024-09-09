@@ -16,6 +16,7 @@ class Card:
         """
         self.selenium_facade = selenium_facade
         self.card_element = card_element
+        self.name = self.get_name()
 
     def get_name(self) -> str:
         """

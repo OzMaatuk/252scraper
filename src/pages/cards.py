@@ -74,7 +74,7 @@ class CardsPage(BasePage):
         except Exception as e:
             self.logger.error(f"Error setting filters: {e}")
             raise
-        time.sleep(10)
+        time.sleep(5)
 
     def process_cards(self, message: str):
         """
